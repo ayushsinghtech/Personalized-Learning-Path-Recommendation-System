@@ -1,7 +1,7 @@
 {
-  "name": "pro-auth-backend",
+  "name": "mern-auth-system",
   "version": "1.0.0",
-  "description": "A professional authentication backend service.",
+  "description": "A complete and professional authentication system for a MERN application.",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
