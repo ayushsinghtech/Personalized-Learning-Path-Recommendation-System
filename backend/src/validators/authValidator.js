@@ -1,36 +1,46 @@
 const { body, validationResult } = require('express-validator');
 
 /**
- * An array of validation rules for the user login request.
+ * An array of validation rules for user registration.
  */
-const loginValidationRules = () => {
-    return [
-        body('email', 'Please provide a valid email address.').isEmail(),
-        body('password', 'Password is required.').not().isEmpty(),
-    ];
-};
+const registerValidationRules = () => [
+    body('name', 'Name is required.').not().isEmpty(),
+    body('email', 'Please provide a valid email.').isEmail(),
+    body('password', 'Password must be at least 6 characters long.').isLength({ min: 6 }),
+];
 
 /**
- * A middleware that checks for validation errors from express-validator.
- * @param {object} req - Express request object.
- * @param {object} res - Express response object.
- * @param {function} next - Express next middleware function.
+ * An array of validation rules for user login.
+ */
+const loginValidationRules = () => [
+    body('email', 'Please provide a valid email.').isEmail(),
+    body('password', 'Password is required.').not().isEmpty(),
+];
+
+/**
+ * An array of validation rules for changing the password.
+ */
+const changePasswordValidationRules = () => [
+    body('oldPassword', 'Old password is required.').not().isEmpty(),
+    body('newPassword', 'New password must be at least 6 characters long.').isLength({ min: 6 }),
+];
+
+/**
+ * A middleware that checks for and responds with validation errors.
  */
 const validate = (req, res, next) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         return next();
     }
-
     const extractedErrors = [];
     errors.array().map(err => extractedErrors.push({ [err.path]: err.msg }));
-
-    return res.status(422).json({
-        errors: extractedErrors,
-    });
+    return res.status(422).json({ errors: extractedErrors });
 };
 
 module.exports = {
+    registerValidationRules,
     loginValidationRules,
+    changePasswordValidationRules,
     validate,
 };
